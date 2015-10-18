@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mMoves[3] = (Button) findViewById(R.id.move4);
         mWaitForTurn = false;
         Canvas temp = new Canvas();
-        temp.drawBitmap(bitmap,getSpriteRect("charizard","back"),new Rect(50, 50 ,100 ,200),null);
+        Bitmap sprite = getSprite("charizard", "back");
+        temp.drawBitmap(bitmap,100,100,null);
         mAttackListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -428,11 +429,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    public  Bitmap getBitmap() {
+    public Bitmap getBitmap() {
         return bitmap;
     }
 
-    public  Rect getSpriteRect(String pokemon, String side) {
+    public Bitmap getSprite(String pokemon, String side) {
         if (!side.equals("front") && !side.equals("back")) {
             return null;
         }
@@ -441,9 +442,9 @@ public class MainActivity extends AppCompatActivity {
             JSONObject dim = pokemonObj.getJSONObject("frame");
             int left = dim.getInt("x");
             int top = dim.getInt("y");
-            int right = left + dim.getInt("w");
-            int bottom = top + dim.getInt("h");
-            return new Rect(left, top, right, bottom);
+            int width = dim.getInt("w");
+            int height = dim.getInt("h");
+            return Bitmap.createBitmap(bitmap, left, top, width, height);
         } catch (JSONException e) {
             return null;
         }
