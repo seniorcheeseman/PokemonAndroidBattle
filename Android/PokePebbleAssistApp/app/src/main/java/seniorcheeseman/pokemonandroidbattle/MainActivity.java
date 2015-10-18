@@ -1,5 +1,10 @@
 package seniorcheeseman.pokemonandroidbattle;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -34,15 +41,20 @@ public class MainActivity extends AppCompatActivity {
     private TextView mCommentBar;
     private final Handler handler = new Handler();
     private boolean mWaitForTurn;
+    private Context mContext;
+    private  Bitmap bitmap;
+    private  JSONObject metadata = parseJSON();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setContentView(R.layout.activity_main);
         connectWebSocket();
         mCommentBar = (TextView) findViewById(R.id.PokemonText);
         mPokemonStats = new JSONObject[6];
         mGotPokemon = false;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.spritesheet);
         mFindBattle = (Button) findViewById(R.id.testButton);
         mForfeitButton = (Button) findViewById(R.id.forfeitButton);
         mAttack = (Button) findViewById(R.id.attack);
@@ -54,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         mMoves[2] = (Button) findViewById(R.id.move3);
         mMoves[3] = (Button) findViewById(R.id.move4);
         mWaitForTurn = false;
+        Canvas temp = new Canvas();
+        temp.drawBitmap(bitmap,getSpriteRect("charizard","back"),new Rect(50, 50 ,100 ,200),null);
         mAttackListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -394,4 +408,44 @@ public class MainActivity extends AppCompatActivity {
         return party;
     }
 
+    private  String jsonFilename = "spritesheet.json";
+
+    private  JSONObject parseJSON() {
+        try {
+            InputStream is = getAssets().open(jsonFilename);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            String json = new String(buffer, "UTF-8");
+            return new JSONObject(json);
+        }catch(Exception e)
+        {
+            return null;
+        }
+    }
+
+
+
+
+    public  Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public  Rect getSpriteRect(String pokemon, String side) {
+        if (!side.equals("front") && !side.equals("back")) {
+            return null;
+        }
+        try {
+            JSONObject pokemonObj = metadata.getJSONObject(pokemon + "-" + side);
+            JSONObject dim = pokemonObj.getJSONObject("frame");
+            int left = dim.getInt("x");
+            int top = dim.getInt("y");
+            int right = left + dim.getInt("w");
+            int bottom = top + dim.getInt("h");
+            return new Rect(left, top, right, bottom);
+        } catch (JSONException e) {
+            return null;
+        }
+    }
 }
