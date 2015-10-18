@@ -83,4 +83,76 @@
         android:text="Switch"
         android:visibility="invisible"
         android:clickable="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Move 1"
+        android:id="@+id/move1"
+        android:layout_alignTop="@+id/mypokemon"
+        android:layout_toEndOf="@+id/mypokemon"
+        android:visibility="invisible"
+        android:clickable="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Move 2"
+        android:id="@+id/move2"
+        android:layout_below="@+id/testButton"
+        android:layout_alignStart="@+id/attack"
+        android:visibility="invisible"
+        android:clickable="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Move 3"
+        android:id="@+id/move3"
+        android:layout_below="@+id/move1"
+        android:layout_alignStart="@+id/move1"
+        android:visibility="invisible"
+        android:clickable="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Move 4"
+        android:id="@+id/move4"
+        android:layout_alignTop="@+id/move3"
+        android:layout_alignStart="@+id/switchPokemon"
+        android:visibility="invisible"
+        android:clickable="false"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pokemon 2"
+        android:id="@+id/pokemon2"
+        android:layout_alignTop="@+id/pokemon3"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pokemon 3"
+        android:id="@+id/pokemon3"
+        android:layout_alignBottom="@+id/switchPokemon"
+        android:layout_alignParentEnd="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pokemon 4"
+        android:id="@+id/pokemon4"
+        android:layout_below="@+id/pokemon2"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>
