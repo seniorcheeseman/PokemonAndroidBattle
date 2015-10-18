@@ -28,18 +28,21 @@ public class MainActivity extends AppCompatActivity {
     private Party mParty;
     private String mBattleRoom;
     private Button mFindBattle, mForfeitButton, mAttack, mSwitch;
-    private Button[] mMoves,mSwitchPokemon;
+    private Button[] mMoves, mSwitchPokemon;
     private View.OnClickListener mFindBattleListener, mForfeitListener, mAttackListener, mSwitchListener;
     private JSONObject[] mPokemonStats;
-    private TextView mCommentBar;
+    private TextView mCommentBar,mPokemonName,mOPokemonName;
     private final Handler handler = new Handler();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         connectWebSocket();
         mCommentBar = (TextView) findViewById(R.id.PokemonText);
+        mPokemonName = (TextView) findViewById(R.id.mypokemonname);
+        mOPokemonName = (TextView) findViewById(R.id.opponentPokemonname);
+        mPokemonName.setText("");
+        mOPokemonName.setText("");
         mPokemonStats = new JSONObject[6];
         mGotPokemon = false;
         mFindBattle = (Button) findViewById(R.id.testButton);
@@ -60,16 +63,15 @@ public class MainActivity extends AppCompatActivity {
         mAttackListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    showMoveButtons();
-                    hideBattleButtons();
+                showMoveButtons();
+                hideBattleButtons();
             }
         };
         mSwitchListener = new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                    showSwitchPokemons();
-                    hideBattleButtons();
+                showSwitchPokemons();
+                hideBattleButtons();
             }
         };
         mForfeitListener = new View.OnClickListener() {
@@ -141,29 +143,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSwitchPokemons() {
-            for (int x = 1; x < 6; x++) {
-                final int y = x-1;
-                mSwitchPokemon[x-1].setVisibility(View.VISIBLE);
-                mSwitchPokemon[x-1].setText(mParty.getPokemon(x).getName());
-                mSwitchPokemon[x-1].setClickable(true);
-                mSwitchPokemon[y].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mParty.getPokemon(y+1).isFainted()) {
-                            writePokeText("This pokemon has fainted.");
-                        } else {
-                            Toast.makeText(MainActivity.this, "You switched to " + mParty.getPokemon(y+1).getName(), Toast.LENGTH_SHORT).show();
-                            switchPokemon(y + 1);
-                            hideSwitchButtons();
-                            showBattleButtons();
-                        }
+        for (int x = 1; x < 6; x++) {
+            final int y = x - 1;
+            mSwitchPokemon[x - 1].setVisibility(View.VISIBLE);
+            mSwitchPokemon[x - 1].setText(mParty.getPokemon(x).getName());
+            mSwitchPokemon[x - 1].setClickable(true);
+            mSwitchPokemon[y].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mParty.getPokemon(y + 1).isFainted()) {
+                        writePokeText("This pokemon has fainted.");
+                    } else {
+                        Toast.makeText(MainActivity.this, "You switched to " + mParty.getPokemon(y + 1).getName(), Toast.LENGTH_SHORT).show();
+                        switchPokemon(y + 1);
+                        hideSwitchButtons();
+                        showBattleButtons();
                     }
-                });
-            }
+                }
+            });
+        }
     }
 
-    private void hideSwitchButtons()
-    {
+    private void hideSwitchButtons() {
         for (int x = 0; x < 5; x++) {
             mSwitchPokemon[x].setVisibility(View.INVISIBLE);
             mSwitchPokemon[x].setClickable(false);
@@ -317,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                         if (message.contains("fnt")) {
                             mParty.getPokemon(0).setFainted();
                             mParty.getPokemon(0).changeHp(0);
+                            Toast.makeText(MainActivity.this, "Your pokemon has fainted. You must switch pokemon", Toast.LENGTH_SHORT).show();
                         } else {
                             String[] part = message.split("\\|");
                             String hps = part[2];
@@ -324,6 +326,10 @@ public class MainActivity extends AppCompatActivity {
                             mParty.getPokemon(0).changeHp(Integer.parseInt(healths[0]));
                         }
                         Log.d("Hploss", Integer.toString(mParty.getPokemon(0).getHp()));
+                    }
+                    else
+                    {
+
                     }
                 }
                 Log.d(TAG, message);
