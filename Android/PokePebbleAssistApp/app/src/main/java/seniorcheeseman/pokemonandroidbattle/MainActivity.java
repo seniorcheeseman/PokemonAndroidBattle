@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 forfeit();
+                mGotPokemon = false;
                 mFindBattle.setOnClickListener(mFindBattleListener);
                 mFindBattle.setClickable(true);
                 mFindBattle.setVisibility(View.VISIBLE);
