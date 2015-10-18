@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private WebSocketClient mWebSocketClient;
     private boolean mGotPokemon;
     private Party mParty;
-    private String mBattleRoom;
+    private String mBattleRoom,mPVal;
     private Button mFindBattle, mForfeitButton, mAttack, mSwitch;
     private Button[] mMoves, mSwitchPokemon;
     private View.OnClickListener mFindBattleListener, mForfeitListener, mAttackListener, mSwitchListener;
@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         connectWebSocket();
+        mPVal = "";
         mCommentBar = (TextView) findViewById(R.id.PokemonText);
         mPokemonName = (TextView) findViewById(R.id.mypokemonname);
         mOPokemonName = (TextView) findViewById(R.id.opponentPokemonname);
@@ -258,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
                             part = getParty(parts[1].substring(1));//hard coded
                             mGotPokemon = true;
                             JSONObject temp = part.getJSONObject("side");
+                            mPVal = temp.getString("id");
                             JSONArray pokes = temp.getJSONArray("pokemon");
                             Pokemon[] pokemons = new Pokemon[6];
                             for (int x = 0; x < pokes.length(); x++) {
@@ -274,17 +276,16 @@ public class MainActivity extends AppCompatActivity {
                                 pokemons[x] = new Pokemon(name, moves, pp, hp);
                             }
                             mParty = new Party(pokemons);
-
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showBattleButtons();
+                                    mPokemonName.setText(mParty.getPokemon(0).getName());
+                                }
+                            });
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                showBattleButtons();
-                            }
-                        });
-
                     } else if (message.contains("active")) {
                         String[] parts = message.split("request");
                         JSONObject part;
@@ -325,12 +326,24 @@ public class MainActivity extends AppCompatActivity {
                             String[] healths = hps.split("/");
                             mParty.getPokemon(0).changeHp(Integer.parseInt(healths[0]));
                         }
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mPokemonName.setText(mParty.getPokemon(0).getName());
+                            }
+                        });
                         Log.d("Hploss", Integer.toString(mParty.getPokemon(0).getHp()));
                     }
-                    else
-                    {
-
-                    }
+                }
+                if(message.contains("switch|")&&!message.contains("mPVal"))
+                {
+                    final String[] part = message.split("\\|");
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mOPokemonName.setText(part[1].substring(4));
+                        }
+                    });
                 }
                 Log.d(TAG, message);
             }
