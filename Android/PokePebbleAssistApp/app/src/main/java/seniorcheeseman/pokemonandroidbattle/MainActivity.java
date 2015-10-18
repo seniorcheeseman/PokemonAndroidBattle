@@ -43,14 +43,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean mWaitForTurn;
     private Context mContext;
     private  Bitmap bitmap;
-    private  JSONObject metadata = parseJSON();
-
+    private  JSONObject metadata;
+    private  String jsonFilename;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
         setContentView(R.layout.activity_main);
         connectWebSocket();
+        jsonFilename = "spritesheet.json";
+        metadata = parseJSON();
         mCommentBar = (TextView) findViewById(R.id.PokemonText);
         mPokemonStats = new JSONObject[6];
         mGotPokemon = false;
@@ -409,7 +411,7 @@ public class MainActivity extends AppCompatActivity {
         return party;
     }
 
-    private  String jsonFilename = "spritesheet.json";
+
 
     private  JSONObject parseJSON() {
         try {
