@@ -1,16 +1,12 @@
 package seniorcheeseman.pokemonandroidbattle;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import com.getpebble.android.kit.PebbleKit;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -20,7 +16,6 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 import PokemonParts.Party;
 import PokemonParts.Pokemon;
@@ -31,39 +26,61 @@ public class MainActivity extends AppCompatActivity {
     private boolean mGotPokemon;
     private Party mParty;
     private String mBattleRoom;
-    private Button mGod, mForfeitButton;
-    private View.OnClickListener mFindBattleListener, mForfeitListener;
-
+    private Button mFindBattle, mForfeitButton, mAttack,mSwitch;
+    private View.OnClickListener mFindBattleListener, mForfeitListener,mAttackListener;
+    private JSONObject[] mPokemonStats;
+    private TextView mCommentBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         connectWebSocket();
+        mCommentBar =(TextView) findViewById(R.id.PokemonText);
+        mPokemonStats = new JSONObject[6];
         mGotPokemon = false;
-        mGod = (Button) findViewById(R.id.testButton);
+        mFindBattle = (Button) findViewById(R.id.testButton);
         mForfeitButton = (Button) findViewById(R.id.forfeitButton);
+        mAttack = (Button) findViewById(R.id.attack);
+        mSwitch = (Button) findViewById(R.id.switchPokemon);
+        mAttackListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
         mForfeitListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 forfeit();
+                mFindBattle.setOnClickListener(mFindBattleListener);
+                mFindBattle.setClickable(true);
+                mFindBattle.setVisibility(View.VISIBLE);
+                mForfeitButton.setOnClickListener(null);
+                mForfeitButton.setVisibility(View.INVISIBLE);
+                mForfeitButton.setClickable(false);
             }
         };
         mFindBattleListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 findRandomBattle();
-                mGod.setOnClickListener(null);
+                mFindBattle.setOnClickListener(null);
+                mFindBattle.setClickable(false);
+                mFindBattle.setVisibility(View.INVISIBLE);
                 mForfeitButton.setOnClickListener(mForfeitListener);
+                mForfeitButton.setVisibility(View.VISIBLE);
+                mForfeitButton.setClickable(true);
             }
         };
-        mGod.setOnClickListener(mFindBattleListener);
+        mFindBattle.setOnClickListener(mFindBattleListener);
     }
 
     private void forfeit() {
         String giveUp = mBattleRoom + "|/forfeit";
+        Toast.makeText(this, "GG Try again", Toast.LENGTH_SHORT).show();
         sendMessage(giveUp);
         mForfeitButton.setOnClickListener(null);//todo make it invisible
-        mGod.setOnClickListener(mFindBattleListener);
+        mFindBattle.setOnClickListener(mFindBattleListener);
     }
 
 
@@ -90,33 +107,6 @@ public class MainActivity extends AppCompatActivity {
         mWebSocketClient.close();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private void connectWebSocket() {
         URI uri;
         try {
@@ -130,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onOpen(ServerHandshake serverHandshake) {
                 Log.i("Websocket", "Opened");
-                mWebSocketClient.send("Hello from " + Build.MANUFACTURER + " " + Build.MODEL);
             }
 
             @Override
@@ -149,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
                             for (int x = 0; x < pokes.length(); x++) {
                                 int[] pp = {12, 12, 12, 12};
                                 String[] moves = new String[4];
-                                JSONObject poke = (JSONObject) pokes.get(0);
+                                JSONObject poke = (JSONObject) pokes.get(x);
+                                mPokemonStats[x]= poke;
                                 JSONArray pokeMoves = (JSONArray) poke.get("moves");
-
                                 for (int y = 0; y < 4; y++) {
                                     moves[y] = (String) pokeMoves.get(y);
                                 }
@@ -225,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage(String message) {
         mWebSocketClient.send(message);
         Log.d("WebsocketMessages", message);
-        Toast.makeText(this, message + ": has been sent", Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, message + ": has been sent", Toast.LENGTH_LONG).show();
     }
 
     /**
