@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private Party mParty;
     private String mBattleRoom;
     private Button mFindBattle, mForfeitButton, mAttack, mSwitch;
-    private Button[] mMoves;
+    private Button[] mMoves,mSwitchPokemon;
     private View.OnClickListener mFindBattleListener, mForfeitListener, mAttackListener, mSwitchListener;
     private JSONObject[] mPokemonStats;
     private TextView mCommentBar;
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mAttack = (Button) findViewById(R.id.attack);
         mSwitch = (Button) findViewById(R.id.switchPokemon);
         mMoves = new Button[4];
+        mSwitchPokemon = new Button[5];
         mMoves[0] = (Button) findViewById(R.id.move1);
         mMoves[1] = (Button) findViewById(R.id.move2);
         mMoves[2] = (Button) findViewById(R.id.move3);
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         if (mParty.getPokemon(0).getCurrentPP()[0] >= 0) {
                             makeMove(0);
-                            writePokeText("You used " + moves.getString(0));
+                            Toast.makeText(MainActivity.this, "You used " + moves.getString(0), Toast.LENGTH_SHORT).show();
                             mWaitForTurn = true;
                             hideMoveButtons();
                             showBattleButtons();
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         if (mParty.getPokemon(0).getCurrentPP()[1] >= 0) {
                             makeMove(1);
-                            writePokeText("You used " + moves.getString(1));
+                            Toast.makeText(MainActivity.this, "You used " + moves.getString(1), Toast.LENGTH_SHORT).show();;
                             hideMoveButtons();mWaitForTurn = true;
                             showBattleButtons();
                         } else {
@@ -158,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         if (mParty.getPokemon(0).getCurrentPP()[2] >= 0) {
                             makeMove(2);
-                            writePokeText("You used " + moves.getString(2));
+                            Toast.makeText(MainActivity.this, "You used " + moves.getString(2), Toast.LENGTH_SHORT).show();;
                             hideMoveButtons();mWaitForTurn = true;
                             showBattleButtons();
                         } else {
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         if (mParty.getPokemon(0).getCurrentPP()[2] >= 0) {
                             makeMove(3);
-                            writePokeText("You used " + moves.getString(3));
+                            Toast.makeText(MainActivity.this, "You used " + moves.getString(3), Toast.LENGTH_SHORT).show();;
                             hideMoveButtons();mWaitForTurn = true;
                             showBattleButtons();
                         } else {
