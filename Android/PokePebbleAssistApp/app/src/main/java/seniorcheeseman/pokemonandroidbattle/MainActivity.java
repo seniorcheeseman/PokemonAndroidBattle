@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     private JSONObject[] mPokemonStats;
     private TextView mCommentBar,mPokemonName,mOPokemonName;
     private final Handler handler = new Handler();
-    private Context mContext;
     private  Bitmap bitmap;
     private  JSONObject metadata;
     private  String jsonFilename;
@@ -51,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
         setContentView(R.layout.activity_main);
         connectWebSocket();
         jsonFilename = "spritesheet.json";
@@ -80,11 +78,10 @@ public class MainActivity extends AppCompatActivity {
         mMoves[1] = (Button) findViewById(R.id.move2);
         mMoves[2] = (Button) findViewById(R.id.move3);
         mMoves[3] = (Button) findViewById(R.id.move4);
-        Bitmap sprite = getSprite("charizard", "back");
         myPokemon = (ImageView) findViewById(R.id.mypokemon);
         opPokemon = (ImageView) findViewById(R.id.opponentPokemon);
-        myPokemon.setImageBitmap(sprite);
-        RelativeLayout layout = (RelativeLayout) findViewById(R.id.battleLayout);
+        myPokemon.setImageBitmap(null);
+        opPokemon.setImageBitmap(null);
         mAttackListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 mFindBattle.setOnClickListener(mFindBattleListener);
                 mFindBattle.setClickable(true);
                 mFindBattle.setVisibility(View.VISIBLE);
+                myPokemon.setImageBitmap(null);
+                opPokemon.setImageBitmap(null);
                 writePokeText("");
                 mPokemonName.setText("");
                 mOPokemonName.setText("");
@@ -250,8 +249,12 @@ public class MainActivity extends AppCompatActivity {
         mPokemonStats[0] = mPokemonStats[pos];
         mPokemonStats[pos] = temp;
         sendMessage(mBattleRoom + "|/switch " + in);
+        String name = mParty.getPokemon(0).getName().toLowerCase();
+        name = name.replaceAll(" ","");
+        Bitmap sprite = getSprite(name,"back");
+        myPokemon.setImageBitmap(sprite);
+        mPokemonName.setText(mParty.getPokemon(0).getName()+Integer.toString(mParty.getPokemon(0).getHp())+"/"+Integer.toString(mParty.getPokemon(0).getMaxhp()));
     }
-
 
     @Override
     protected void onDestroy() {
@@ -307,7 +310,13 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     showBattleButtons();
-                                    mPokemonName.setText(mParty.getPokemon(0).getName());
+                                    String name = mParty.getPokemon(0).getName()+Integer.toString(mParty.getPokemon(0).getHp())+"/"+Integer.toString(mParty.getPokemon(0).getMaxhp());
+                                    mPokemonName.setText(name);
+                                    String temp = mParty.getPokemon(0).getName();
+                                    temp = temp.toLowerCase();
+                                    temp = temp.replaceAll(" ","");
+                                    Bitmap sprite = getSprite(temp, "back");
+                                    myPokemon.setImageBitmap(sprite);
                                 }
                             });
                         } catch (JSONException e) {
@@ -356,13 +365,19 @@ public class MainActivity extends AppCompatActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                mPokemonName.setText(mParty.getPokemon(0).getName());
+                                String temp = mParty.getPokemon(0).getName()+Integer.toString(mParty.getPokemon(0).getHp())+"/"+Integer.toString(mParty.getPokemon(0).getMaxhp());
+                                mPokemonName.setText(temp);
+                                String name = mParty.getPokemon(0).getName();
+                                name = name.toLowerCase();
+                                name = name.replaceAll(" ","");
+                                Bitmap sprite = getSprite(name, "back");
+                                myPokemon.setImageBitmap(sprite);
                             }
                         });
                         Log.d("Hploss", Integer.toString(mParty.getPokemon(0).getHp()));
                     }
                 }
-                if(message.contains("switch|"+mPVal))
+                if(message.contains("switch|"))
                 {
                     String tt = (mPVal.equals("p1"))?"p2":"p1";
                     String temp =  message.substring(message.indexOf("switch|"+tt));
@@ -370,7 +385,13 @@ public class MainActivity extends AppCompatActivity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mOPokemonName.setText(part[1].substring(4));
+                            String op = part[1].substring(4) + part[3];
+                            mOPokemonName.setText(op);
+                            String input = part[1].substring(4);
+                            input = input.replaceAll(" ","");
+                            input = input.toLowerCase();
+                            Bitmap sprite = getSprite(input, "front");
+                            opPokemon.setImageBitmap(sprite);
                         }
                     });
                 }
@@ -424,11 +445,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
     public Bitmap getSprite(String pokemon, String side) {
         if (!side.equals("front") && !side.equals("back")) {
             return null;
@@ -436,10 +452,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             JSONObject pokemonObj = metadata.getJSONObject(pokemon + "-" + side);
             JSONObject dim = pokemonObj.getJSONObject("frame");
-            int left = dim.getInt("x");
-            int top = dim.getInt("y");
-            int width = dim.getInt("w");
-            int height = dim.getInt("h");
+            int left = 2*dim.getInt("x");
+            int top = 2*dim.getInt("y");
+            int width = 2*dim.getInt("w");
+            int height = 2*dim.getInt("h");
             return Bitmap.createBitmap(bitmap, left, top, width, height);
         } catch (JSONException e) {
             return null;
