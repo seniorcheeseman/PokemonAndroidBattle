@@ -12,9 +12,9 @@
         android:id="@+id/testButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search for battle"
         android:layout_above="@+id/mypokemon"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:text="Search for battle" />
 
     <Button
         android:id="@+id/forfeitButton"
@@ -43,9 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="250dp"
+        android:clickable="false"
         android:text="Attack"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/titleicon"
@@ -80,97 +80,116 @@
         android:layout_alignEnd="@+id/attack"
         android:layout_alignLeft="@+id/attack"
         android:layout_below="@+id/attack"
+        android:clickable="false"
         android:text="Switch"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:visibility="invisible" />
 
     <Button
+        android:id="@+id/move1"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Move 1"
-        android:id="@+id/move1"
         android:layout_alignTop="@+id/mypokemon"
         android:layout_toEndOf="@+id/mypokemon"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:clickable="false"
+        android:text="Move 1"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Move 2"
         android:id="@+id/move2"
-        android:layout_below="@+id/testButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@+id/attack"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:layout_below="@+id/testButton"
+        android:clickable="false"
+        android:text="Move 2"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Move 3"
         android:id="@+id/move3"
-        android:layout_below="@+id/move1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@+id/move1"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:layout_below="@+id/move1"
+        android:clickable="false"
+        android:text="Move 3"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Move 4"
         android:id="@+id/move4"
-        android:layout_alignTop="@+id/move3"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignStart="@+id/switchPokemon"
-        android:visibility="invisible"
-        android:clickable="false"/>
+        android:layout_alignTop="@+id/move3"
+        android:clickable="false"
+        android:text="Move 4"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pokemon 2"
         android:id="@+id/pokemon2"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/pokemon3"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:text="Pokemon 2"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pokemon 3"
         android:id="@+id/pokemon3"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/switchPokemon"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:clickable="false"
+        android:text="Pokemon 3"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pokemon 4"
         android:id="@+id/pokemon4"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/pokemon2"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:clickable="false"
+        android:text="Pokemon 4"
+        android:visibility="invisible" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pokemon 5"
         android:id="@+id/pokemon5"
-        android:layout_below="@+id/switchPokemon"
-        android:layout_alignParentEnd="true" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pokemon 6"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/switchPokemon"
+        android:clickable="false"
+        android:text="Pokemon 5"
+        android:visibility="invisible" />
+
+    <Button
         android:id="@+id/pokemon6"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/PokemonText"
         android:layout_below="@+id/pokemon5"
-        android:layout_alignEnd="@+id/PokemonText" />
+        android:clickable="false"
+        android:text="Pokemon 6"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Pokemon Name"
+        android:id="@+id/mypokemonname"
+        android:layout_above="@+id/pokemon2"
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

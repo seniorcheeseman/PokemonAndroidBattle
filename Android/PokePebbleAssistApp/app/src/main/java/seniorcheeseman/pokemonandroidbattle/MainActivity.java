@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private JSONObject[] mPokemonStats;
     private TextView mCommentBar;
     private final Handler handler = new Handler();
-    private boolean mWaitForTurn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,37 +48,28 @@ public class MainActivity extends AppCompatActivity {
         mSwitch = (Button) findViewById(R.id.switchPokemon);
         mMoves = new Button[4];
         mSwitchPokemon = new Button[5];
+        mSwitchPokemon[0] = (Button) findViewById(R.id.pokemon2);
+        mSwitchPokemon[1] = (Button) findViewById(R.id.pokemon3);
+        mSwitchPokemon[2] = (Button) findViewById(R.id.pokemon4);
+        mSwitchPokemon[3] = (Button) findViewById(R.id.pokemon5);
+        mSwitchPokemon[4] = (Button) findViewById(R.id.pokemon6);
         mMoves[0] = (Button) findViewById(R.id.move1);
         mMoves[1] = (Button) findViewById(R.id.move2);
         mMoves[2] = (Button) findViewById(R.id.move3);
         mMoves[3] = (Button) findViewById(R.id.move4);
-        mWaitForTurn = false;
         mAttackListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mWaitForTurn)
-                {
-
-                }
-                else {
-                    mWaitForTurn = false;
                     showMoveButtons();
                     hideBattleButtons();
-                }
             }
         };
         mSwitchListener = new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if(mWaitForTurn)
-                {
-
-                }
-                else {
                     showSwitchPokemons();
                     hideBattleButtons();
-                }
             }
         };
         mForfeitListener = new View.OnClickListener() {
@@ -89,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 mFindBattle.setOnClickListener(mFindBattleListener);
                 mFindBattle.setClickable(true);
                 mFindBattle.setVisibility(View.VISIBLE);
+                writePokeText("");
                 hideBattleButtons();
             }
         };
@@ -114,79 +105,28 @@ public class MainActivity extends AppCompatActivity {
             JSONObject current = mPokemonStats[0];
             final JSONArray moves = current.getJSONArray("moves");
             for (int x = 0; x < 4; x++) {
+                final int y = x;
                 mMoves[x].setVisibility(View.VISIBLE);
                 mMoves[x].setText(moves.getString(x));
                 mMoves[x].setClickable(true);
+                mMoves[y].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            if (mParty.getPokemon(0).getCurrentPP()[y] > 0) {
+                                makeMove(y);
+                                Toast.makeText(MainActivity.this, "You used " + moves.getString(y), Toast.LENGTH_SHORT).show();
+                                hideMoveButtons();
+                                showBattleButtons();
+                            } else {
+                                writePokeText("Your pokemon is too tired to do that.");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
-            mMoves[0].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (mParty.getPokemon(0).getCurrentPP()[0] >= 0) {
-                            makeMove(0);
-                            Toast.makeText(MainActivity.this, "You used " + moves.getString(0), Toast.LENGTH_SHORT).show();
-                            mWaitForTurn = true;
-                            hideMoveButtons();
-                            showBattleButtons();
-                        } else {
-                            writePokeText("Your pokemon is too tired to do that.");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mMoves[1].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (mParty.getPokemon(0).getCurrentPP()[1] >= 0) {
-                            makeMove(1);
-                            Toast.makeText(MainActivity.this, "You used " + moves.getString(1), Toast.LENGTH_SHORT).show();;
-                            hideMoveButtons();mWaitForTurn = true;
-                            showBattleButtons();
-                        } else {
-                            writePokeText("Your pokemon is too tired to do that.");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mMoves[2].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (mParty.getPokemon(0).getCurrentPP()[2] >= 0) {
-                            makeMove(2);
-                            Toast.makeText(MainActivity.this, "You used " + moves.getString(2), Toast.LENGTH_SHORT).show();;
-                            hideMoveButtons();mWaitForTurn = true;
-                            showBattleButtons();
-                        } else {
-                            writePokeText("Your pokemon is too tired to do that.");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            mMoves[3].setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (mParty.getPokemon(0).getCurrentPP()[2] >= 0) {
-                            makeMove(3);
-                            Toast.makeText(MainActivity.this, "You used " + moves.getString(3), Toast.LENGTH_SHORT).show();;
-                            hideMoveButtons();mWaitForTurn = true;
-                            showBattleButtons();
-                        } else {
-                            writePokeText("Your pokemon is too tired to do that.");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,7 +141,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSwitchPokemons() {
+            for (int x = 1; x < 6; x++) {
+                final int y = x-1;
+                mSwitchPokemon[x-1].setVisibility(View.VISIBLE);
+                mSwitchPokemon[x-1].setText(mParty.getPokemon(x).getName());
+                mSwitchPokemon[x-1].setClickable(true);
+                mSwitchPokemon[y].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mParty.getPokemon(y+1).isFainted()) {
+                            writePokeText("This pokemon has fainted.");
+                        } else {
+                            Toast.makeText(MainActivity.this, "You switched to " + mParty.getPokemon(y+1).getName(), Toast.LENGTH_SHORT).show();
+                            switchPokemon(y + 1);
+                            hideSwitchButtons();
+                            showBattleButtons();
+                        }
+                    }
+                });
+            }
+    }
 
+    private void hideSwitchButtons()
+    {
+        for (int x = 0; x < 5; x++) {
+            mSwitchPokemon[x].setVisibility(View.INVISIBLE);
+            mSwitchPokemon[x].setClickable(false);
+        }
     }
 
     private void showBattleButtons() {
@@ -359,7 +325,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                         Log.d("Hploss", Integer.toString(mParty.getPokemon(0).getHp()));
                     }
-                    mWaitForTurn = false;
                 }
                 Log.d(TAG, message);
             }
