@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 mFindBattle.setClickable(true);
                 mFindBattle.setVisibility(View.VISIBLE);
                 writePokeText("");
+                mPokemonName.setText("");
+                mOPokemonName.setText("");
                 hideBattleButtons();
             }
         };
@@ -335,9 +337,11 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Hploss", Integer.toString(mParty.getPokemon(0).getHp()));
                     }
                 }
-                if(message.contains("switch|")&&!message.contains("mPVal"))
+                if(message.contains("switch|"+mPVal))
                 {
-                    final String[] part = message.split("\\|");
+                    String tt = (mPVal.equals("p1"))?"p2":"p1";
+                    String temp =  message.substring(message.indexOf("switch|"+tt));
+                    final String[] part = temp.split("\\|");
                     handler.post(new Runnable() {
                         @Override
                         public void run() {

@@ -189,8 +189,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Pokemon Name"
         android:id="@+id/mypokemonname"
-        android:layout_above="@+id/pokemon2"
-        android:layout_alignParentStart="true" />
+        android:layout_above="@+id/mypokemon"
+        android:layout_alignStart="@+id/forfeitButton" />
 
     <TextView
         android:layout_width="wrap_content"
